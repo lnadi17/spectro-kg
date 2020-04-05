@@ -4,7 +4,7 @@ import matplotlib.colors as colors
 import scipy.io.wavfile as wave
 import numpy.fft
 from IPython.display import Audio
-
+import sys
 
 # returns sampling frequency and audio data in range [-1, 1]. prints audio length and sample rate 
 def read_wav_audio(audio_relative_path):
@@ -109,6 +109,11 @@ def main():
     
     audio_base_path = 'audio/'
     audio_file_name = 'test.wav'
+
+    try:
+        audio_file_name = sys.argv[1]
+    except:
+        pass
     
     fs, audio_data = read_wav_audio(audio_base_path + audio_file_name)
     
