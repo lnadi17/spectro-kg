@@ -99,10 +99,10 @@ def plot_specgram(signal, fs, n_width=1024, n_overlap=512, eps=1e-5, figsize=(15
         n_tick = -min_tick + 1 # compute tick count
         ticks = np.logspace(0, min_tick, n_tick)
 
-        dbs = (10*np.log10(ticks))
-        labels = [(str(i)[:-2] + " dB") for i in dbs]
+        dbs = 10*np.log10(ticks)
+        tick_labels = [(str(i)[:-2] + " dB") for i in dbs]
         cbar.set_ticks(ticks)
-        cbar.ax.set_yticklabels(labels)
+        cbar.ax.set_yticklabels(tick_labels)
 
     if labels:
         plt.xlabel("Time (sec)")
