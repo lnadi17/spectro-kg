@@ -74,7 +74,7 @@ def get_matrix(audio_data, n_width, n_overlap, eps):
     return fts
         
         
-def plot_specgram(signal, fs, n_width=1024, n_overlap=512, eps=10e-5, figsize=(15, 7)):
+def plot_specgram(signal, fs, n_width=1024, n_overlap=512, eps=1e-5, figsize=(15, 7), colorbar=True, labels=True):
     plt.figure(figsize=figsize)
     
     fts = get_matrix(signal, n_width, n_overlap, eps)
@@ -92,10 +92,21 @@ def plot_specgram(signal, fs, n_width=1024, n_overlap=512, eps=10e-5, figsize=(1
                norm=colors.LogNorm(vmin=fts.min(), vmax=fts.max()),
                cmap='viridis') # useful cmaps: inferno, magma, viridis
 
-    plt.colorbar(None, use_gridspec=True)
+    if colorbar:
+        cbar = plt.colorbar()
 
-    plt.xlabel("Time (sec)")
-    plt.ylabel("Frequency (Hz)")
+        min_tick = np.ceil(np.log10(eps)) # round up to nearest power of 10
+        n_tick = -min_tick + 1 # compute tick count
+        ticks = np.logspace(0, min_tick, n_tick)
+
+        dbs = (10*np.log10(ticks))
+        labels = [(str(i)[:-2] + " dB") for i in dbs]
+        cbar.set_ticks(ticks)
+        cbar.ax.set_yticklabels(labels)
+
+    if labels:
+        plt.xlabel("Time (sec)")
+        plt.ylabel("Frequency (Hz)")
 
     # return final result
     return plt
