@@ -93,7 +93,8 @@ def plot_specgram(signal, fs, n_width=1024, n_overlap=512, eps=1e-5, figsize=(15
                cmap='viridis') # useful cmaps: inferno, magma, viridis
 
     if colorbar:
-        cbar = plt.colorbar()
+        cbar = plt.colorbar(None, use_gridspec=True)
+        cbar.ax.set_ylabel('Power (dB)')
 
     if labels:
         plt.xlabel("Time (sec)")
