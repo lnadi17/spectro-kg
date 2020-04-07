@@ -8,15 +8,16 @@ import sys
 
 
 # returns sampling frequency and audio data in range [-1, 1]. prints audio length and sample rate
-def read_wav_audio(audio_relative_path):
+def read_wav_audio(audio_relative_path, verbose=True):
     # fs is sample rate, audio_data is data from a .wav file
     fs, audio_data = wave.read(audio_relative_path)
 
     # audio length in seconds
     length = len(audio_data) / fs
 
-    print("Audio length:", round(length, 2), "seconds")
-    print("Sample rate:", fs, "Hz")
+    if verbose:
+        print("Audio length: {} seconds, Sample rate: {} Hz".format(
+            round(length, 2), fs))
 
     # convert dtype to float32. works on common data types specified in
     # https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.wavfile.read.html
@@ -54,7 +55,7 @@ def get_window_generator(signal, n_width, n_overlap):
         index = index + 1
 
 
-def get_matrix(audio_data, n_width, n_overlap, eps):
+def get_matrix(audio_data, n_width=1024, n_overlap=512, eps=1e-5):
     windows = get_window_generator(audio_data, n_width, n_overlap)
 
     # create array which will have fourier transforms in it
@@ -76,38 +77,37 @@ def get_matrix(audio_data, n_width, n_overlap, eps):
     return fts
 
 
-def get_specgram(signal, fs,
-                 n_width=1024, n_overlap=512, eps=1e-5, figsize=(15, 7), colorbar=True, labels=True):
-    plt.figure(figsize=figsize)
+def plot_specgram(signal, fs,
+                  n_width=1024, n_overlap=512, eps=1e-5, figsize=None, colorbar=True, labels=True):
+    fig = plt.figure(figsize=figsize)
+    ax = fig.subplots()
 
     fts = get_matrix(signal, n_width, n_overlap, eps)
 
+    spectrogram_show(fts, ax, fs, n_width, n_overlap, colorbar, labels)
+
+    plt.show()
+
+
+# calls imshow on passed axes, adds colorbar and labels if needed
+def spectrogram_show(arr2d, ax, fs, n_width=1024, n_overlap=512, colorbar=False, labels=False):
     # compute x and y max values
-    x_max = fts.shape[1] * (n_width - n_overlap) / fs
+    x_max = arr2d.shape[1] * (n_width - n_overlap) / fs
     y_max = fs / 2
 
-    # plot spectrogram with logarithmic scale
-    plt.imshow(fts,
-               origin='lower',
-               aspect='auto',
-               extent=[0, x_max, 0, y_max],
-               interpolation='nearest',
-               cmap='viridis')  # useful cmaps: inferno, magma, viridis
+    im = ax.imshow(arr2d,
+                   origin='lower',
+                   aspect='auto',
+                   extent=[0, x_max, 0, y_max],
+                   interpolation='nearest',
+                   cmap='viridis')  # useful cmaps: inferno, magma, viridis
 
     if colorbar:
-        cbar = plt.colorbar(None, use_gridspec=True)
-        cbar.ax.set_ylabel('Power (dB)')
+        cbar = plt.colorbar(im, ax=ax)
 
     if labels:
-        plt.xlabel("Time (sec)")
-        plt.ylabel("Frequency (Hz)")
+        ax.set_xlabel("Time (sec)")
+        ax.set_ylabel("Frequency (Hz)")
 
-    # return final result
-    return plt
-
-
-def plot_specgram(signal, fs,
-                  n_width=1024, n_overlap=512, eps=1e-5, figsize=(15, 7), colorbar=True, labels=True):
-    get_specgram(signal, fs,
-                 n_width, n_overlap, eps, figsize, colorbar, labels)
-    plt.show()
+        if colorbar:
+            cbar.ax.set_ylabel('Power (dB)')
