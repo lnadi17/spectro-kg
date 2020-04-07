@@ -74,7 +74,7 @@ def get_matrix(audio_data, n_width, n_overlap, eps):
     return fts
         
         
-def plot_specgram(signal, fs, n_width, n_overlap, eps=10e-5, figsize=(15, 7)):
+def plot_specgram(signal, fs, n_width=1024, n_overlap=512, eps=10e-5, figsize=(15, 7)):
     plt.figure(figsize=figsize)
     
     fts = get_matrix(signal, n_width, n_overlap, eps)
@@ -99,6 +99,7 @@ def plot_specgram(signal, fs, n_width, n_overlap, eps=10e-5, figsize=(15, 7)):
 
     # plot final result
     plt.show()
+    
 
 
 def main():
