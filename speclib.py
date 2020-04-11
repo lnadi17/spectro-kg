@@ -48,6 +48,7 @@ def get_window_generator(signal, n_width, n_overlap):
             signal = np.pad(signal, (0, delta), 'constant')
 
         chunk = signal[start_pos:stop_pos]
+        chunk = np.multiply(chunk, np.hanning(len(chunk)))
         window = abs(np.fft.rfft(chunk))
 
         yield window
@@ -79,7 +80,7 @@ def get_matrix(audio_data, n_width=1024, n_overlap=512, eps=None):
         eps /= maximum
 
     for i in range(fts.shape[0]):
-        fts[i] = np.interp(fts[i], [0, maximum], [eps, 1])
+        fts[i] = np.interp(fts[i], [minimum, maximum], [eps, 1])
         fts[i] = 10*np.log10(fts[i])
 
     return fts
