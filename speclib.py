@@ -55,7 +55,7 @@ def get_window_generator(signal, n_width, n_overlap):
         index = index + 1
 
 
-def get_matrix(audio_data, n_width=1024, n_overlap=512, eps=1e-5):
+def get_matrix(audio_data, n_width=1024, n_overlap=512, eps=None):
     windows = get_window_generator(audio_data, n_width, n_overlap)
 
     # create array which will have fourier transforms in it
@@ -67,30 +67,40 @@ def get_matrix(audio_data, n_width=1024, n_overlap=512, eps=1e-5):
     fts = np.array(fts).T
 
     # rescale matrix
-    minimum = fts.min()
-    maximum = fts.max()
+    flat = fts.flatten()
+    minimum = flat.min()
+    maximum = flat.max()
+    if eps is None:
+        eps = 1
+        # find minimum positive value
+        for val in flat:
+            if val < eps and val != 0:
+                eps = val
+        eps /= maximum
 
     for i in range(fts.shape[0]):
-        fts[i] = np.interp(fts[i], [minimum, maximum], [eps, 1])
+        fts[i] = np.interp(fts[i], [0, maximum], [eps, 1])
         fts[i] = 10*np.log10(fts[i])
 
     return fts
 
 
 def plot_specgram(signal, fs,
-                  n_width=1024, n_overlap=512, eps=1e-5, figsize=None, colorbar=True, labels=True):
+                  n_width=1024, n_overlap=512, eps=None, figsize=None, colorbar=True, labels=True):
     fig = plt.figure(figsize=figsize)
     ax = fig.subplots()
 
-    fts = get_matrix(signal, n_width, n_overlap, eps)
-
-    spectrogram_show(fts, ax, fs, n_width, n_overlap, colorbar, labels)
+    spectrogram_show(signal, ax, fs, 
+                     eps=eps, n_width=n_width, n_overlap=n_overlap, colorbar=colorbar, labels=labels)
 
     plt.show()
 
 
 # calls imshow on passed axes, adds colorbar and labels if needed
-def spectrogram_show(arr2d, ax, fs, n_width=1024, n_overlap=512, colorbar=False, labels=False):
+def spectrogram_show(signal, ax, fs, eps=None, n_width=1024, n_overlap=512, colorbar=False, labels=False):
+    # get spectrogram matrix from signal
+    arr2d = get_matrix(signal, n_width, n_overlap, eps)
+    
     # compute x and y max values
     x_max = arr2d.shape[1] * (n_width - n_overlap) / fs
     y_max = fs / 2
