@@ -8,7 +8,7 @@ import sys
 
 
 # returns sampling frequency and audio data in range [-1, 1]. prints audio length and sample rate
-def read_wav_audio(audio_relative_path, verbose=True):
+def read_wav_audio(audio_relative_path, verbose=False):
     # fs is sample rate, audio_data is data from a .wav file
     fs, audio_data = wave.read(audio_relative_path)
 
@@ -31,7 +31,7 @@ def read_wav_audio(audio_relative_path, verbose=True):
 
 
 # n_width is window width and n_overlap is window overlap (in samples)
-def get_window_generator(signal, n_width, n_overlap):
+def get_window_generator(signal, n_width=1024, n_overlap=512):
     index = 0
     original_length = len(signal)
 
@@ -87,18 +87,22 @@ def get_matrix(audio_data, n_width=1024, n_overlap=512, eps=None):
 
 
 def plot_specgram(signal, fs,
-                  n_width=1024, n_overlap=512, eps=None, figsize=None, colorbar=True, labels=True):
+                  n_width=1024, n_overlap=512, eps=None, figsize=None, colorbar=True, labels=True,
+                  interpolation='nearest', cmap='inferno'):
     fig = plt.figure(figsize=figsize)
     ax = fig.subplots()
 
     spectrogram_show(signal, ax, fs, 
-                     eps=eps, n_width=n_width, n_overlap=n_overlap, colorbar=colorbar, labels=labels)
+                     eps=eps, n_width=n_width, n_overlap=n_overlap, colorbar=colorbar, labels=labels,
+                     interpolation=interpolation, cmap=cmap)
 
     plt.show()
 
 
 # calls imshow on passed axes, adds colorbar and labels if needed
-def spectrogram_show(signal, ax, fs, eps=None, n_width=1024, n_overlap=512, colorbar=False, labels=False):
+def spectrogram_show(signal, ax, fs, 
+                     eps=None, n_width=1024, n_overlap=512, colorbar=True, labels=True, 
+                     interpolation='nearest', cmap='inferno'):
     # get spectrogram matrix from signal
     arr2d = get_matrix(signal, n_width, n_overlap, eps)
     
@@ -110,8 +114,8 @@ def spectrogram_show(signal, ax, fs, eps=None, n_width=1024, n_overlap=512, colo
                    origin='lower',
                    aspect='auto',
                    extent=[0, x_max, 0, y_max],
-                   interpolation='nearest',
-                   cmap='viridis')  # useful cmaps: inferno, magma, viridis
+                   interpolation=interpolation,
+                   cmap=cmap)  # useful cmaps: inferno, magma, viridis
 
     if colorbar:
         cbar = plt.colorbar(im, ax=ax)
