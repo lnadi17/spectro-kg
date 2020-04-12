@@ -4,18 +4,16 @@ import argparse
 
 def main():
     # create parser
-    parser = argparse.ArgumentParser(description='Plot a spectrogram.')
-    parser.add_argument('filename', help='input .wav file path') 
-    parser.add_argument('-v', '--verbose', help='increase output verbosity.',
-                         action='store_true')
+    parser = argparse.ArgumentParser(description='Plot a spectrogram of .wav audio files from command line interface.')
+    parser.add_argument('file', help='input .wav audio file path') 
     parser.add_argument('-w', '--window-width', help='set window width. default is 1024.', 
-                        type=int, default=1024, metavar='NUMBER')
+                        type=int, default=1024)
     parser.add_argument('-o', '--overlap-width', help='set overlap width. default is half of window width.', 
-                        type=int, metavar='NUMBER')
+                        type=int)
     parser.add_argument('-e', '--epsilon', 
                         help='set custom epsilon to which the darkest color maps. otherwise, it\'s set automatically by the program.', 
-                        type=float, metavar='NUMBER')
-    parser.add_argument('-nc', '--no-colorbar', help='remove colorbar next from plot.',
+                        type=float)
+    parser.add_argument('-nc', '--no-colorbar', help='remove colorbar from plot.',
                         action='store_false')
     parser.add_argument('-nl', '--no-labels', help='remove all labels from plot.',
                         action='store_false')
@@ -24,7 +22,7 @@ def main():
                         default='nearest')
     parser.add_argument('-c', '--colormap', help='set custom colormap. default is \'inferno\'.',
                         choices=['inferno', 'viridis', 'plasma', 'magma', 'cividis', 'hot', 'gray'],
-                        default='viridis')
+                        default='inferno')
     args = parser.parse_args()
     
     if not args.overlap_width:
@@ -34,7 +32,7 @@ def main():
         print("Warning: Window overlap width must be less than window width. Setting overlap width to default value.")
         args.overlap_width = args.window_width // 2
 
-    fs, audio_data = read_wav_audio(args.filename)
+    fs, audio_data = read_wav_audio(args.file)
 
     plot_specgram(audio_data, fs, 
                   n_width=args.window_width, n_overlap=args.overlap_width, eps=args.epsilon,
