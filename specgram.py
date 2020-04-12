@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from speclib import *
 import argparse
 
