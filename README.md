@@ -1,12 +1,13 @@
 # spectro-kg
-პროგრამა ქმნის სპექტროგრამას მიწოდებული (wav გაფართოების) აუდიო ფაილისგან.
+This program generates a spectrogram from an input (wav format) audio file.
+[დააჭირეთ აქ ქართული README-ს სანახავად.](./README_ge.md)
 
-## გამოყენების ინსტრუქცია
-საწყისი პარამეტრებით example.wav-ის სპექტროგრამის დახატვა:
+## Usage
+To draw the spectrogram of example.wav with default parameters:
 ```
 ./specgram.py example.wav
 ```
-ბრძანებების სრული სია:
+Full list of commands:
 ```
 usage: specgram.py [-h] [-w WINDOW_WIDTH] [-o OVERLAP_WIDTH] [-e EPSILON]
                    [-nc] [-nl]
@@ -36,29 +37,22 @@ optional arguments:
                         set custom colormap. default is 'inferno'.
 ```
 
-## დეტალური აღწერა
-ამ ეტაპზე პროგრამა დაყოფილია ორ ლოგიკურ ნაწილად:
+## Detailed Description
+The program is divided into two logical parts:
 * Jupyter Notebooks (notebook.ipynb, subplots.ipynb, experiments.ipynb)
 * Python Scripts (speclib.py, specgram.py)
 
 ### notebook.ipynb
-აქ ნაჩვენებია ის გავლილი ნაბიჯები რომლებიც სპექტროგრამის საბოლოო იმპლემენტაციამდე მიდის. 
-პროგრამის მუშაობის გასარკვევად ამის გამოყენება ჯობს, რადგან მარტივად შეიძლება 
-ექპერიმენტების ჩატარება და უმეტესი კოდი **speclib.py**-ში აქედანაა გატანილი.
+This notebook shows the steps leading up to the final implementation of the spectrogram. It serves as an useful tool for exploring experiments and contains the core code, and most of this code is exported to **speclib.py**.
 
 ### subplots.ipynb
-ამ ფაილში განმარტებულია ფუნქცია რომელიც რამდენიმე სპექტროგრამის ერთდროულად დახატვის საშუალებას იძლევა, 
-რადგან matplotlib-ის სპექტროგრამასთან მაქსიმალურად დასაახლოვებლად ბევრი გრაფიკის ერთდროულად შედარება მიწევდა.
+This file contains a function that allows plotting multiple spectrograms side by side, as it provides a convenient way to compare multiple graphics with matplotlib's spectrogram.
 
 ### experiments.ipynb
-ამ ეტაპზე ნოუთბუქში გვერდიგვერდაა დახატული სპექტროგრამა და მისი მნიშვნელობების განაწილება, რადგან 
-მაშინ მაინტერესებდა epsilon-ზე როგორ იყო ეს ორი გრაფიკი დამოკიდებული. 
-თუმცა, სხვა ნებისმიერი ექსპერიმენტიც ჯობია ჯერ აქ ჩატარდეს.
+This notebook shows the plotted spectrogram and the distribution of its values, as I was interested in comparing the two graphics based on epsilon. Any other experiments should be performed here first.
 
 ### speclib.py
-ამ ფაილში არის ყველა ის ძირითადი ფუნქცია რაც სპექტროგრამის დახატვაში დაგვეხმარება. 
-კოდი უმეტესად გადმოტანილია **notebook.ipynb**-დან, დანარჩენ ფაილებში კი უკვე ეს ბიბლიოთეკაა დაიმპორტებული.
+This file contains all the main functions that assist in drawing the spectrogram. The code is mostly extracted from **notebook.ipynb**, and this library is imported in the remaining files.
 
 ### specgram.py
-ესაა python სკრიპტი, რომლის გაშვებაც შეიძლება ტერმინალიდან. იყენებს argparse ბიბლიოთეკას არგუმენტების დამუშავებისთვის 
-და **speclib.py**-ს სპექტროგრამის დასახატად.
+This is a Python script that can be executed from the terminal. It uses the argparse library for argument parsing and speclib.py to draw the spectrogram.
