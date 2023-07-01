@@ -1,5 +1,6 @@
 # spectro-kg
 პროგრამა ქმნის სპექტროგრამას მიწოდებული (wav გაფართოების) აუდიო ფაილისგან.
+
 [Click here for the English README.](./README.md)
 
 ## გამოყენების ინსტრუქცია
