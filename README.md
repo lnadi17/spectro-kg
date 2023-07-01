@@ -1,7 +1,7 @@
 # spectro-kg
 This program generates a spectrogram from an input (wav format) audio file.
 
-[დააჭირეთ აქ ქართული README-ს სანახავად.](./README_ge.md)
+[დააჭირეთ აქ ქართული README-ს სანახავად](./README_ge.md)
 
 ## Usage
 To draw the spectrogram of example.wav with default parameters:
